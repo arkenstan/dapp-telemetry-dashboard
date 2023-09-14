@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { IGunInstance } from 'gun';
 import GUN from 'gun/gun';
 
 interface TelemetryData {
   host: string;
-  RAM: string;
+  RAM: {[key:string]:string};
   CPU: string;
 }
 
@@ -16,10 +15,10 @@ interface TelemetryData {
 export class AppComponent implements OnInit {
   title = 'telemetry-dashboard';
 
-  private gunClient = GUN(['http://localhost:3030/gun']);
+  private gunClient = GUN(['http://localhost:8765/gun']);
 
   private _telemetryData: Record<string, TelemetryData> = {};
-
+  
   public get telemetryData() {
     return Object.values(this._telemetryData);
   }
@@ -29,15 +28,12 @@ export class AppComponent implements OnInit {
       .get('telemetryData')
       .map()
       .on((data, id) => {
-        console.log(data, id);
-
+        console.log("*** Hello",data, id);
         let key = id;
-
         if (data.host) {
           key = data.host;
         }
-
-        this._telemetryData[key] = data;
+        this._telemetryData[key] = {...data,RAM: JSON.parse(data.RAM)};
       });
   }
 }

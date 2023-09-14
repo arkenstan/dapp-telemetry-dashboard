@@ -1,7 +1,10 @@
-<h1>Telemetry</h1>
+<h1>Telemetry Dashboard</h1>
 
 <div class="telemetry-container">
   <div class="telemetry" *ngFor="let data of telemetryData">
     {{ data.host }} - RAM: {{ data.RAM }} - CPU: {{ data.CPU }}
+    <app-chart *ngIf="data.RAM" [data]="data.RAM" [machineName]="data.host"></app-chart>
   </div>
 </div>
+
+
